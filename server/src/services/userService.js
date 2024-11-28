@@ -1,21 +1,41 @@
 import * as bcrypt from "bcrypt";
 import User from "../models/userModel";
+// import { JwtProvider } from "~/providers/JwtProvider";
 
-const loginService = (email, password) => {
-  console.log("loginService", email, password);
-  // if (req.body.email !== MOCK_DATABASE.USER.EMAIL || req.body.password !== MOCK_DATABASE.USER.PASSWORD) {
-  //   res.status(StatusCodes.FORBIDDEN).json({ message: 'Your email or password is incorrect!' })
-  //   return
-  // }
+// const loginService = async (email, password) => {
+//   const user = await User.findOne({ email });
+//   if (!user) {
+//     return { message: "Email chưa dược đăng ký!" };
+//   }
 
-  // Trường hợp nhập đúng thông tin tài khoản, tạo token và trả về cho phía Client
-};
+//   const isMatch = await bcrypt.compare(password, user.password);
+
+//   if (!isMatch) {
+//     return { message: "Mật khẩu sai!" };
+//   }
+
+//   const accessToken = await JwtProvider.generateToken(
+//     { email: user.email, userId: user._id },
+//     process.env.ACCESS_TOKEN_SECRET_KEY,
+//     process.env.ACCESS_TOKEN_LIFE
+//   );
+//   const refreshToken = await JwtProvider.generateToken(
+//     { email: user.email, userId: user._id },
+//     process.env.REFRESH_TOKEN_SECRET_KEY,
+//     process.env.REFRESH_TOKEN_LIFE
+//   );
+
+//   //cookie
+
+//   // Trường hợp nhập đúng thông tin tài khoản, tạo token và trả về cho phía Client
+
+//   return { message: "Đăng nhập thành công!" };
+// };
 
 const registerService = async (data) => {
-  console.log("register", data);
-  const { email, password, userName } = data;
-
   try {
+    // console.log("register", data);
+    const { email, password, userName } = data;
     //check email exist
     const user = await User.findOne({ email });
     if (user) {
@@ -40,6 +60,6 @@ const registerService = async (data) => {
 };
 
 export const userService = {
-  loginService,
+  // loginService,
   registerService,
 };
