@@ -2,9 +2,10 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { logout, refreshToken } from "~/services/api";
+import { API_ROOT } from "./constants";
 
 let authorizedAxios = axios.create();
-authorizedAxios.defaults.baseURL = "http://localhost:8017";
+authorizedAxios.defaults.baseURL = API_ROOT;
 authorizedAxios.defaults.timeout = 1000 * 60 * 10; // 10 minutes
 authorizedAxios.defaults.withCredentials = true;
 
@@ -31,6 +32,7 @@ authorizedAxios.interceptors.response.use(
   (response) => {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
+
     return response;
   },
   (error) => {
@@ -46,7 +48,7 @@ authorizedAxios.interceptors.response.use(
     }
 
     const originalRequest = error.config;
-    console.log(originalRequest);
+    // console.log(originalRequest);
     //nếu có lỗi 410 thì gọi api refresh token
 
     if (error.response?.status === 410 && originalRequest) {

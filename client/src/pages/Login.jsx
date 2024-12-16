@@ -29,7 +29,7 @@ function Login() {
     };
     localStorage.setItem("accessToken", res.data.accessToken);
     localStorage.setItem("userInfor", JSON.stringify(userInfor));
-    navigate("/dashboard");
+    navigate(`/dashboard`);
   };
 
   return (

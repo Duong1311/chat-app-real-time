@@ -1,85 +1,53 @@
 // Author: TrungQuanDev: https://youtube.com/@trungquandev
 import { useEffect, useState } from "react";
-import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import CircularProgress from "@mui/material/CircularProgress";
-import Divider from "@mui/material/Divider";
-import { Button } from "@mui/material";
-// import { toast } from "react-toastify";
-import { dashboardsAccess, logout } from "~/services/api";
-import { useNavigate } from "react-router-dom";
+import { fetchChat } from "~/services/api";
+// import { useNavigate } from "react-router-dom";
+import Header from "./Header";
+import { ChatBox } from "./ChatBox";
+import { MyChats } from "./MyChats";
 
 function Dashboard() {
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
-  const handleLogout = async () => {
-    await logout();
-    navigate("/login");
+  const user = JSON.parse(localStorage.getItem("userInfor"));
+
+  // console.log(user);
+  const [chat, setChat] = useState(null);
+  // const [selectedChat, setSelectedChat] = useState(null);
+  const getAllChats = async (id) => {
+    const res = await fetchChat(id);
+    // console.log(res.data);
+    setChat(res?.data.result);
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await dashboardsAccess();
-      // console.log(res.data);
-      setUser(res.data);
-    };
-    fetchData();
+    getAllChats(user.id);
   }, []);
 
-  if (!user) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 2,
-          width: "100vw",
-          height: "100vh",
-        }}
-      >
-        <CircularProgress />
-        <Typography>Loading dashboard user...</Typography>
-      </Box>
-    );
-  }
+  // if (!user) {
+  //   return (
+  //     <Box
+  //       sx={{
+  //         display: "flex",
+  //         alignItems: "center",
+  //         justifyContent: "center",
+  //         gap: 2,
+  //         width: "100vw",
+  //         height: "100vh",
+  //       }}
+  //     >
+  //       <CircularProgress />
+  //       <Typography>Loading dashboard user...</Typography>
+  //     </Box>
+  //   );
+  // }
 
   return (
-    <Box
-      sx={{
-        // maxWidth: "1120px",
-        marginTop: "1em",
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: "column",
-        padding: "0 1em",
-      }}
-    >
-      <Alert
-        severity="info"
-        sx={{ ".MuiAlert-message": { overflow: "hidden" } }}
-      >
-        Đây là trang Dashboard sau khi user:&nbsp;
-        <Typography
-          variant="span"
-          sx={{ fontWeight: "bold", "&:hover": { color: "#fdba26" } }}
-        >
-          {user?.email}
-        </Typography>
-        &nbsp; đăng nhập thành công thì mới cho truy cập vào.
-      </Alert>
-      <Button
-        type="button"
-        variant="contained"
-        color="primary"
-        sx={{ mt: 2, alignSelf: "center" }}
-        onClick={handleLogout}
-      >
-        <Typography>Đăng suất</Typography>
-      </Button>
-
-      <Divider sx={{ my: 2 }} />
+    <Box className="bg-slate-100 flex flex-col min-h-dvh">
+      <Header />
+      <Box className="flex flex-row  min-h-max">
+        <ChatBox chat={chat} />
+        <MyChats />
+      </Box>
     </Box>
   );
 }

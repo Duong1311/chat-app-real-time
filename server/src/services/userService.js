@@ -58,8 +58,32 @@ const registerService = async (data) => {
     return { message: "Đăng ký thất bại!" };
   }
 };
+const getUserService = async (data) => {
+  // get _id, email, userName
+  const page = parseInt(data.page) || 1;
+  const limit = parseInt(data.limit) || 10;
+  const skip = (page - 1) * limit;
+  const mathQuery = {};
+  // index search by userName or email
+  if (data.search) {
+    mathQuery.$text = { $search: data.search };
+  }
+  const totalUser = await User.countDocuments(mathQuery);
+  const totalPage = Math.ceil(totalUser / limit);
+  const users = await User.find(mathQuery)
+    .select("_id email userName")
+    .limit(limit)
+    .skip(skip);
+
+  return {
+    users,
+    totalPage,
+    currentPage: page,
+  };
+};
 
 export const userService = {
   // loginService,
   registerService,
+  getUserService,
 };

@@ -7,7 +7,10 @@ import cookieParser from "cookie-parser";
 import { corsOptions } from "~/config/corsOptions";
 import { APIs_V1 } from "~/routes/v1/";
 import { connectDB } from "~/config/connectDb";
+import { errorHandlingMiddleware } from "./middlewares/errorHandlingMiddleware";
 import dotenv from "dotenv";
+import http from "http";
+import socketIo from "socket.io";
 dotenv.config();
 
 const START_SERVER = () => {
@@ -35,9 +38,46 @@ const START_SERVER = () => {
   // Connect to MongoDB
   connectDB();
 
-  // Should be store to env in the actual product: check here: https://youtu.be/Vgr3MWb7aOw
+  // error handing
+  app.use(errorHandlingMiddleware);
 
-  app.listen(
+  // server for socket.io
+  const server = http.createServer(app);
+  const io = socketIo(server, { cors: corsOptions });
+  io.on("connection", (socket) => {
+    console.log("New client connected " + socket.id);
+    socket.on("join chat", (room) => {
+      socket.join(room);
+      console.log(`User joined chat: ${room}`);
+    });
+    // socket.on("leave chat", (room) => {
+    //   socket.leave(room);
+    //   console.log(`User left chat: ${room}`);
+    // });
+    socket.on("disconnect", () => {
+      console.log("A user disconnected " + socket.id);
+    });
+
+    socket.on("new message", (newMessageRecieved) => {
+      console.log(newMessageRecieved);
+      //gui cho tat ca moi nguoi ke ca ban than
+      // io.sockets.emit("BE_MES_REV", newMessageRecieved);
+
+      // chi gui cho ban than
+      // socket.emit("BE_MES_REV", newMessageRecieved);
+
+      //gui cho tat ca moi nguoi trong room tru nguoi gui
+      // socket.broadcast.emit("BE_MES_REV", newMessageRecieved);
+      //gui trong rom
+      socket
+        .to(newMessageRecieved.chatId._id)
+        .emit("BE_MES_REV", newMessageRecieved);
+
+      //io là kiểu to hơn socket, có thể gửi tin nhắn tới tất cả các room, thành viên kể cả người gửi
+      //socket là kiểu gửi tin nhắn tới room cụ thể, không gửi tin nhắn tới người gửi
+    });
+  });
+  server.listen(
     process.env.LOCAL_DEV_APP_PORT,
     process.env.LOCAL_DEV_APP_HOST,
     () => {

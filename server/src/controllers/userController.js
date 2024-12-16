@@ -114,10 +114,19 @@ const refreshToken = async (req, res) => {
       .json({ message: " Refresh Token API failed." });
   }
 };
+const getUser = async (req, res) => {
+  try {
+    const users = await userService.getUserService(req.query);
+    res.status(StatusCodes.OK).json(users);
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+  }
+};
 
 export const userController = {
   login,
   logout,
   refreshToken,
   register,
+  getUser,
 };
