@@ -1,8 +1,9 @@
 import { Box, Button, CircularProgress, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { socket } from "~/main";
+import { setAllChatData } from "~/redux/actions";
 import { fetchAllMessages, sendMessages } from "~/services/api";
 import { getSender } from "~/utils/supportFuntion";
 
@@ -10,6 +11,7 @@ var selectedChatCompare;
 export const MyChats = () => {
   //get chat from url
   const param = useParams();
+  const dispatch = useDispatch();
   const selectedChat = useSelector((state) => state.selectedChat);
   const chatData = useSelector((state) => state.chatData);
   const currentUser = JSON.parse(localStorage.getItem("userInfor"));
@@ -17,6 +19,17 @@ export const MyChats = () => {
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
+  const allChat = useSelector((state) => state.allChat);
+
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [allMessages]);
 
   const fetchMessages = async (id) => {
     if (!id) return;
@@ -25,7 +38,7 @@ export const MyChats = () => {
     setAllMessages(res?.data.result);
     // console.log(res?.data.result);
     setLoading(false);
-    socket.emit("join chat", id);
+    // socket.emit("join chat", id);
   };
   const handleSendMessage = async () => {
     if (newMessage === "") return;
@@ -61,10 +74,18 @@ export const MyChats = () => {
         !selectedChatCompare || // if chat is not selected or doesn't match current chat
         selectedChatCompare.id !== newMessageRecieved.chatId._id
       ) {
-        // if (!notification.includes(newMessageRecieved)) {
-        //   setNotification([newMessageRecieved, ...notification]);
-        //   setFetchAgain(!fetchAgain);
-        // }
+        //if newMessageRecieved.chatId._id === id on allChat move order of id to top
+        const newChat = allChat.filter(
+          (c) => c._id !== newMessageRecieved.chatId._id
+        );
+        //get chat from allChat with id === newMessageRecieved.chatId._id
+        const chat = allChat.filter(
+          (c) => c._id === newMessageRecieved.chatId._id
+        );
+        //add chat to top of allChat
+        dispatch(setAllChatData([...chat, ...newChat]));
+
+        // dispatch(setAllChatData(newMessageRecieved));
       } else {
         setAllMessages([...allMessages, newMessageRecieved]);
       }
@@ -79,7 +100,7 @@ export const MyChats = () => {
 
   return (
     <Box
-      className="w-2/3 bg-white m-2 rounded-lg  "
+      className="w-full bg-white m-2 rounded-lg  "
       sx={{
         minHeight: "calc(100vh - 85px)",
       }}
@@ -106,9 +127,9 @@ export const MyChats = () => {
           }}
           className="bg-slate-200 mt-4 rounded-lg flex flex-col justify-between"
         >
-          {/* auto scroll to bottom? */}
-
           <Box className=" overflow-y-auto overflow-hidden">
+            {/* auto scroll to bottom? */}
+
             {loading ? (
               <CircularProgress />
             ) : (
@@ -144,6 +165,8 @@ export const MyChats = () => {
                 </Box>
               ))
             )}
+
+            <div ref={messagesEndRef} />
           </Box>
           <Box className="flex flex-row justify-between p-2">
             <TextField

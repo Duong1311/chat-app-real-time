@@ -147,17 +147,18 @@ export default function Header() {
           {DrawerList}
         </Drawer>
       </div>
-      <h1 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
+      <h1 className="absolute hidden md:block sm:block  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
         {currentUser.email}
       </h1>
       <div>
-        <Button
+        {/* <Button
+          className="hidden md:block sm:block"
           aria-controls={openMenu ? "basic-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={openMenu ? "true" : undefined}
           onClick={handleClick}
           startIcon={<NotificationsActiveIcon />}
-        ></Button>
+        ></Button> */}
 
         <Menu
           id="basic-menu"

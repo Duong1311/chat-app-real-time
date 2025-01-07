@@ -45,10 +45,12 @@ const START_SERVER = () => {
   const server = http.createServer(app);
   const io = socketIo(server, { cors: corsOptions });
   io.on("connection", (socket) => {
-    console.log("New client connected " + socket.id);
-    socket.on("join chat", (room) => {
-      socket.join(room);
-      console.log(`User joined chat: ${room}`);
+    // console.log("New client connected " + socket.id);
+    socket.on("join chat", (rooms) => {
+      rooms?.forEach((room) => {
+        socket.join(room);
+        console.log(`Socket ${socket.id} joined room ${room}`);
+      });
     });
     // socket.on("leave chat", (room) => {
     //   socket.leave(room);
