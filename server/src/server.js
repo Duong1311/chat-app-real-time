@@ -61,7 +61,7 @@ const START_SERVER = () => {
     });
 
     socket.on("new message", (newMessageRecieved) => {
-      console.log(newMessageRecieved);
+      // console.log(newMessageRecieved);
       //gui cho tat ca moi nguoi ke ca ban than
       // io.sockets.emit("BE_MES_REV", newMessageRecieved);
 

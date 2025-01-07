@@ -7,8 +7,7 @@ import TextField from "@mui/material/TextField";
 import Zoom from "@mui/material/Zoom";
 import Alert from "@mui/material/Alert";
 import { useForm } from "react-hook-form";
-import Typography from "@mui/material/Typography";
-import TrungQuanDevIcon from "../assets/trungquandev-logo.png";
+
 import { login } from "~/services/api";
 import { useNavigate } from "react-router-dom";
 
@@ -58,20 +57,15 @@ function Login() {
               borderRadius: 2,
             }}
           >
-            <Box sx={{ width: "70px", bgcolor: "white", margin: "0 auto" }}>
-              <img src={TrungQuanDevIcon} alt="trungquandev" width="100%" />
-            </Box>
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "center",
+                fontSize: "2rem",
                 color: (theme) => theme.palette.grey[500],
               }}
             >
-              <Box>
-                <Typography>Hint: trungquandev.official@gmail.com</Typography>
-                <Typography>Pass: trungquandev@123</Typography>
-              </Box>
+              Login
             </Box>
             <Box sx={{ padding: "0 1em 1em 1em" }}>
               <Box sx={{ marginTop: "1.2em" }}>

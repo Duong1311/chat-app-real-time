@@ -18,7 +18,7 @@ export const MyChats = () => {
   const [allMessages, setAllMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [socketConnected, setSocketConnected] = useState(false);
+  // const [socketConnected, setSocketConnected] = useState(false);
   const allChat = useSelector((state) => state.allChat);
 
   const messagesEndRef = useRef(null);
@@ -61,13 +61,13 @@ export const MyChats = () => {
     selectedChatCompare = param;
   }, [param]);
 
-  useEffect(() => {
-    // socket.emit("setup", currentUser);
-    socket.on("connection", (data) => {
-      console.log(data);
-      setSocketConnected(true);
-    });
-  }, []);
+  // useEffect(() => {
+  //   // socket.emit("setup", currentUser);
+  //   socket.on("connection", (data) => {
+  //     console.log(data);
+  //     // setSocketConnected(true);
+  //   });
+  // }, []);
   useEffect(() => {
     const recievedHandler = (newMessageRecieved) => {
       if (
@@ -100,7 +100,7 @@ export const MyChats = () => {
 
   return (
     <Box
-      className="w-full bg-white m-2 rounded-lg  "
+      className="w-full bg-white m-2 rounded-lg text-xl "
       sx={{
         minHeight: "calc(100vh - 85px)",
       }}
